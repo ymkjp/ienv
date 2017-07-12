@@ -13,6 +13,8 @@ type Option struct {
   Url string
   Dir string
   DeployTo string
+  CopyPattern string
+  IgnorePattern string
   Debug bool
   Help bool
   Uuid *uuid.UUID
@@ -35,6 +37,9 @@ func (opt *Option) init() {
   } else if opt.DeployTo == "" {
     opt.DeployTo = opt.targetDir(homeDir, opt.Uuid.String())
   }
+  if !opt.Debug {
+    log.SetFormatter(&log.JSONFormatter{})
+  }
 }
 
 func (opt *Option) setupFlag() {
@@ -42,7 +47,9 @@ func (opt *Option) setupFlag() {
     &opt.Url,
     "url",
     "",
-    "[Required] URL to dotfiles repository such as https://github.com/ymkjp/dotfiles")
+    "[Required] URL to dotfiles repository such as https://github.com/ymkjp/dotfiles.\n\t" +
+      "1. Clone dotfiles to dir\n\t" +
+      "2. Create symlink to deploy-to\n\t")
   flag.StringVar(
     &opt.Dir,
     "dir",
@@ -57,6 +64,18 @@ func (opt *Option) setupFlag() {
     "",
     "[Optional] Directory path which symlinks of dotfiles is going to be deployed. " +
       "If nothing specified, environment variable $HOME will be used.")
+  flag.StringVar(
+    &opt.IgnorePattern,
+    "ignore-pattern",
+    ".git",
+    "[Optional] Directory path which symlinks of dotfiles is going to be deployed. " +
+      "If nothing specified, environment variable $HOME will be used.")
+  flag.StringVar(
+    &opt.CopyPattern,
+    "copy-pattern",
+    "*.local",
+    "[Optional] Copy file but not create symlink if matched to pattern. " +
+      "Refer https://golang.org/pkg/path/#Match for pattern syntax")
   flag.BoolVar(
     &opt.Debug,
     "debug",

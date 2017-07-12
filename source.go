@@ -11,7 +11,7 @@ type Source struct {}
 
 func (*Source) fetch(url string, dir string) {
   log.Info(fmt.Sprintf("Executing `git clone %s %s`", url, dir))
-  _, err := git.PlainClone(dir, false, &git.CloneOptions{
+  _, err := git.PlainClone(dir, false, &git.CloneOptions {
     URL: url,
   })
   if err != nil {
@@ -19,10 +19,9 @@ func (*Source) fetch(url string, dir string) {
   }
 }
 
-func (*Source) cleanup(dir string, permanent bool) {
-  if permanent {
-    return
-  }
-  log.Info(fmt.Sprintf("Removing `%s`", dir))
+func (*Source) cleanup(dir string) {
+  log.WithFields(log.Fields {
+    "dir": dir,
+  }).Info("Removing directory")
   os.RemoveAll(dir)
 }

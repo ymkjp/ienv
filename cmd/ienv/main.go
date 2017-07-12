@@ -1,9 +1,9 @@
 package main
 
 import (
-  ienv "github.com/ymkjp/ienv"
+  script "github.com/ymkjp/ienv"
 )
 
 func main() {
-  ienv.Run()
+  script.Run()
 }
